@@ -1,6 +1,6 @@
 # Copyright 2020 Camptocamp SA
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl)
-from odoo import _, api, models
+from odoo import api, models
 from odoo.tools.misc import format_datetime
 
 
@@ -27,7 +27,7 @@ class StockPicking(models.Model):
         formatted_scheduled_date = format_datetime(self.env, scheduled_date)
         partner = self.partner_id
         if partner.delivery_time_preference == "workdays":
-            message = _(
+            message = self.env._(
                 "The scheduled date is {date} ({weekday}), but the partner is "
                 "set to prefer deliveries on working days."
             ).format(
@@ -41,16 +41,15 @@ class StockPicking(models.Model):
                     delivery_windows_strings.append(
                         f"  * {w.display_name} ({partner.tz})"
                     )
-            message = _(
+            message = self.env._(
                 "The scheduled date is {date} ({tz}), but the partner is "
-                "set to prefer deliveries on following time windows:\n{window}"
-            ).format(
+                "set to prefer deliveries on following time windows:\n{window}",
                 date=format_datetime(self.env, self.scheduled_date),
                 tz=self.env.context.get("tz"),
                 window="\n".join(delivery_windows_strings),
             )
         return {
-            "title": _(
+            "title": self.env._(
                 "Scheduled date does not match partner's Delivery window preference."
             ),
             "message": message,
